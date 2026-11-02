@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2026-11-02T10:00:00.000Z",
+  "shops": [
+    {
+      "slug": "lieferando",
+      "affiliateNetwork": "digidip",
+      "coupons": [
+        {
+          "id": "lieferando-app",
+          "title": "App-Rabatt für deine nächste Bestellung",
+          "discountLabel": "15% Gutschein",
+          "type": "code",
+          "code": "APP15DEMO",
+          "exclusive": true,
+          "merchantUrl": "https://www.lieferando.de/",
+          "expiresAt": "2026-12-31",
+          "source": "manual"
+        }
+      ]
+    }
+  ]
+}
