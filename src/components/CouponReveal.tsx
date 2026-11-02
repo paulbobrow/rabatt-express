@@ -7,9 +7,16 @@ type Props = {
   shop: Shop;
   coupon: Coupon;
   compact?: boolean;
+  /** MyDealz-Style pill CTA */
+  pill?: boolean;
 };
 
-export function CouponReveal({ shop, coupon, compact = false }: Props) {
+export function CouponReveal({
+  shop,
+  coupon,
+  compact = false,
+  pill = false,
+}: Props) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -38,11 +45,18 @@ export function CouponReveal({ shop, coupon, compact = false }: Props) {
     }
   }
 
+  const ctaLabel =
+    coupon.type === "code" ? "Code anzeigen" : "Deal sichern";
+
   return (
     <>
-      {compact ? (
+      {pill ? (
+        <button type="button" className="btn btn-pill" onClick={reveal}>
+          {ctaLabel}
+        </button>
+      ) : compact ? (
         <button type="button" className="btn-code-cut" onClick={reveal}>
-          <span aria-hidden>✂</span> Zum Code
+          {ctaLabel}
         </button>
       ) : (
         <div className="coupon-actions">
@@ -63,20 +77,31 @@ export function CouponReveal({ shop, coupon, compact = false }: Props) {
           aria-labelledby={`coupon-title-${coupon.id}`}
           onClick={() => setOpen(false)}
         >
-          <div className="overlay-card" onClick={(event) => event.stopPropagation()}>
+          <div
+            className="overlay-card"
+            onClick={(event) => event.stopPropagation()}
+          >
             <div className="overlay-head">
               <div>
                 <h2 id={`coupon-title-${coupon.id}`}>{shop.name}</h2>
-                <p style={{ margin: "0.35rem 0 0", opacity: 0.92 }}>{coupon.title}</p>
+                <p style={{ margin: "0.35rem 0 0", opacity: 0.92 }}>
+                  {coupon.title}
+                </p>
               </div>
-              <button type="button" className="btn btn-ghost" onClick={() => setOpen(false)}>
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={() => setOpen(false)}
+              >
                 Schließen
               </button>
             </div>
             <div className="overlay-body">
               {coupon.type === "code" && coupon.code ? (
                 <>
-                  <p className="muted">Dein Demo-Code (kopieren und im Shop einlösen):</p>
+                  <p className="muted">
+                    Dein Demo-Code (kopieren und im Shop einlösen):
+                  </p>
                   <div className="code-box">
                     <code>{coupon.code}</code>
                     <button type="button" className="btn btn-dark" onClick={copyCode}>
@@ -86,8 +111,8 @@ export function CouponReveal({ shop, coupon, compact = false }: Props) {
                 </>
               ) : (
                 <p className="muted" style={{ marginBottom: "1rem" }}>
-                  Für dieses Angebot brauchst du keinen Code. Der Shop sollte sich in einem
-                  neuen Tab geöffnet haben.
+                  Für dieses Angebot brauchst du keinen Code. Der Shop sollte
+                  sich in einem neuen Tab geöffnet haben.
                 </p>
               )}
 
@@ -99,7 +124,7 @@ export function CouponReveal({ shop, coupon, compact = false }: Props) {
 
               <div className="overlay-actions">
                 <a
-                  className="btn btn-primary"
+                  className="btn btn-pill"
                   href={`/out/${coupon.id}`}
                   target="_blank"
                   rel="nofollow noopener noreferrer"
@@ -107,7 +132,8 @@ export function CouponReveal({ shop, coupon, compact = false }: Props) {
                   Zum Shop von {shop.name}
                 </a>
                 <p className="muted">
-                  * Affiliate-Link: Der Klick läuft über unseren Redirect `/out/{coupon.id}`.
+                  * Affiliate-Link: Der Klick läuft über unseren Redirect{" "}
+                  <code>/out/{coupon.id}</code>.
                 </p>
               </div>
             </div>

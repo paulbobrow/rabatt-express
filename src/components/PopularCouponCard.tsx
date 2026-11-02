@@ -14,19 +14,20 @@ export function PopularCouponCard({ shop, coupon }: Props) {
       {coupon.exclusive ? <span className="exclusive-ribbon">exklusiv</span> : null}
 
       <Link href={`/shop/${shop.slug}`} className="popular-card-logo">
-        <ShopLogo shop={shop} size={120} />
+        <ShopLogo shop={shop} size={132} />
       </Link>
 
-      <p className="popular-card-title">
-        <strong>{coupon.discountLabel}</strong> {coupon.title}
-      </p>
+      <div className="popular-card-copy">
+        <p className="popular-card-discount">{coupon.discountLabel}</p>
+        <p className="popular-card-title">{coupon.title}</p>
+      </div>
 
       <div className="popular-card-cut">
         <CouponReveal shop={shop} coupon={coupon} compact />
       </div>
 
       <Link href={`/shop/${shop.slug}`} className="popular-card-more">
-        Alle {shop.name} Gutscheine anzeigen
+        Alle {shop.name} Gutscheine
       </Link>
     </article>
   );

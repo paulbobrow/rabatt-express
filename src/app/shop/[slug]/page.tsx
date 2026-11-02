@@ -30,9 +30,17 @@ export default async function ShopPage({ params }: Props) {
   return (
     <div className="container">
       <nav className="breadcrumbs" aria-label="Brotkrumen">
-        <Link href="/">Startseite</Link>
+        <Link href="/">Gutscheine</Link>
         <span>/</span>
-        <span>{shop.category}</span>
+        <Link href={`/kategorie/${shop.categorySlug}`}>{shop.category}</Link>
+        {shop.subcategorySlug ? (
+          <>
+            <span>/</span>
+            <Link href={`/kategorie/${shop.categorySlug}/${shop.subcategorySlug}`}>
+              {shop.subcategory}
+            </Link>
+          </>
+        ) : null}
         <span>/</span>
         <strong>{shop.name} Gutschein</strong>
       </nav>
