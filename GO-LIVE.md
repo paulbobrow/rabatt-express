@@ -14,33 +14,41 @@
 
 ## Du musst selbst erledigen (kein Zugriff der KI)
 
-### A) Domain
-1. Bei einem Registrar `rabatt-express.de` kaufen (DENIC/Provider deiner Wahl).
-2. DNS später auf Vercel zeigen (Vercel zeigt die Records).
+### A) Domain — erledigt
+- `rabatt-express.de` bei IONOS gekauft
+- Apex A → Vercel, `www` CNAME → `cname.vercel-dns.com`
+- Live: https://rabatt-express.de
 
-### B) Hosting / Deploy
-1. Account bei [vercel.com](https://vercel.com) erstellen.
-2. GitHub/GitLab-Account + Repo `rabatt-express` anlegen und pushen.
-3. In Vercel: „Import Project“ → dieses Repo.
-4. Environment Variables aus `.env.example` setzen (siehe unten).
-5. Deploy starten, Domain in Vercel verbinden.
+### B) Hosting / Deploy — weitgehend erledigt
+1. ~~Account bei [vercel.com](https://vercel.com) erstellen.~~
+2. ~~Repo pushen + Vercel Import.~~
+3. Environment Variables setzen (siehe C + D unten) → Redeploy.
+4. ~~Domain in Vercel verbinden.~~
 
-### C) Rechtliches
-1. Echte Angaben eintragen (Env in Vercel):
-   - `NEXT_PUBLIC_OPERATOR_NAME`
-   - `NEXT_PUBLIC_OPERATOR_STREET`
-   - `NEXT_PUBLIC_OPERATOR_ZIP_CITY`
-   - `NEXT_PUBLIC_CONTACT_EMAIL`
-   - optional Telefon / USt-IdNr.
-2. Datenschutz bei Bedarf mit Generator finalisieren (Analytics/Cookies).
+### C) Rechtliches — erledigt (Basis)
+- Betreiber: Paul Bobrow, Bergstraße 3/2, 69469 Weinheim
+- Kontakt: info@rabatt-express.de
+- Eingetragen in `src/lib/site.ts` (Impressum + Datenschutz)
+- Optional später: Telefon / USt-IdNr. über Env
+- Datenschutz bei Bedarf mit Generator finalisieren (Analytics/Cookies)
 
-### D) Affiliate-Netzwerke (Geld verdienen)
-1. Bei **Digidip** als Publisher registrieren → `DIGIDIP_REF` erhalten.
-2. Optional **Awin** Publisher-Account → `AWIN_PUBLISHER_ID` (+ Merchant-IDs).
-3. Programme/Shops freischalten lassen (kann dauern).
-4. IDs in Vercel Env speichern und neu deployen.
-5. Test: Gutschein klicken → URL sollte Digidip/Awin enthalten → Shop öffnet.
-6. Provisionen im Netzwerk-Dashboard prüfen.
+### D) Affiliate-Netzwerke — als Nächstes
+**Wichtig:** Digidip ist **invite-only** (kein offenes Signup). Einstieg über
+https://www.digidip.net/ → „Request an invite“ / Contact, Website `https://rabatt-express.de` angeben.
+Freischaltung kann dauern oder abgelehnt werden.
+
+**Praktischer Start für Anfänger: Awin** (offene Bewerbung):
+1. Publisher bei https://www.awin.com/de/publisher anmelden.
+2. Website einreichen, Programme (Shops) beantragen.
+3. In Vercel Env:
+   - `AFFILIATE_DEFAULT_NETWORK` = `awin`
+   - `AWIN_PUBLISHER_ID` = deine Publisher-ID
+   - `AWIN_DEFAULT_MERCHANT_ID` = Merchant-ID eines freigeschalteten Shops (später pro Shop verfeinern)
+4. Redeploy.
+5. Test: https://rabatt-express.de/api/status → `canEarn: true`  
+   und `/out/...` → Location enthält `awin1.com` (nicht direkt den Shop).
+
+**Wenn Digidip kommt:** `DIGIDIP_REF` setzen, `AFFILIATE_DEFAULT_NETWORK=digidip`.
 
 ### E) Automatisierung anschließen
 1. Sobald du einen Coupon-Feed hast: URL als GitHub Secret `COUPON_FEED_URL`.
