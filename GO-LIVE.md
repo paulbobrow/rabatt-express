@@ -37,16 +37,14 @@
 https://www.digidip.net/ → „Request an invite“ / Contact, Website `https://rabatt-express.de` angeben.
 Freischaltung kann dauern oder abgelehnt werden.
 
-**Praktischer Start für Anfänger: Awin** (offene Bewerbung):
-1. Publisher bei https://www.awin.com/de/publisher anmelden.
-2. Website einreichen, Programme (Shops) beantragen.
-3. In Vercel Env:
-   - `AFFILIATE_DEFAULT_NETWORK` = `awin`
-   - `AWIN_PUBLISHER_ID` = deine Publisher-ID
-   - `AWIN_DEFAULT_MERCHANT_ID` = Merchant-ID eines freigeschalteten Shops (später pro Shop verfeinern)
-4. Redeploy.
-5. Test: https://rabatt-express.de/api/status → `canEarn: true`  
-   und `/out/...` → Location enthält `awin1.com` (nicht direkt den Shop).
+**Awin — Publisher-ID gesetzt:** `3142635` (in `src/lib/affiliate.ts`)
+
+Noch nötig für echte Tracking-Links:
+1. In Awin **Programme** der Shops beantragen (Advertiser freischalten).
+2. Pro Shop die **Advertiser-/Merchant-ID** (awinmid) aus dem Link Builder notieren  
+   → entweder `AWIN_DEFAULT_MERCHANT_ID` (ein Shop) oder `awinMerchantId` in `shops.ts`.
+3. Test: `/out/...` → Location enthält `awin1.com?…awinaffid=3142635…`  
+   Status: `canTrackClicks: true`.
 
 **Wenn Digidip kommt:** `DIGIDIP_REF` setzen, `AFFILIATE_DEFAULT_NETWORK=digidip`.
 

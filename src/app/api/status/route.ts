@@ -21,9 +21,11 @@ export async function GET() {
       legalComplete: !isLegalPlaceholder(),
       digidipConfigured: affiliate.digidip,
       awinConfigured: affiliate.awin,
-      canEarn:
-        affiliate.digidip ||
-        Boolean(process.env.AWIN_PUBLISHER_ID?.trim()),
+      awinMerchantConfigured: affiliate.awinHasMerchant,
+      canEarn: affiliate.digidip || affiliate.awin,
+      /** true only when clicks can actually wrap via Awin/Digidip */
+      canTrackClicks:
+        affiliate.digidip || (affiliate.awin && affiliate.awinHasMerchant),
     },
   });
 }
