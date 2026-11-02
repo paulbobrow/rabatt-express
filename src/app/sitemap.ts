@@ -1,38 +1,28 @@
 import type { MetadataRoute } from "next";
-import { categories, shops } from "@/data/shops";
+import { articles, categories } from "@/content/seed";
+import { articleHref } from "@/lib/article-path";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteConfig.url.replace(/\/$/, "");
   const now = new Date();
 
-  const categoryUrls = categories.flatMap((category) => {
-    const main = {
-      url: `${base}/kategorie/${category.slug}`,
-      lastModified: now,
-      changeFrequency: "daily" as const,
-      priority: 0.9,
-    };
-    const subs =
-      category.subcategories?.map((sub) => ({
-        url: `${base}/kategorie/${category.slug}/${sub.slug}`,
-        lastModified: now,
-        changeFrequency: "daily" as const,
-        priority: 0.85,
-      })) ?? [];
-    return [main, ...subs];
-  });
-
   return [
     { url: `${base}/`, lastModified: now, changeFrequency: "daily", priority: 1 },
+    { url: `${base}/methodik`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${base}/impressum`, lastModified: now, changeFrequency: "yearly", priority: 0.2 },
     { url: `${base}/datenschutz`, lastModified: now, changeFrequency: "yearly", priority: 0.2 },
-    ...categoryUrls,
-    ...shops.map((shop) => ({
-      url: `${base}/shop/${shop.slug}`,
+    ...categories.map((c) => ({
+      url: `${base}/kategorie/${c.slug}`,
       lastModified: now,
-      changeFrequency: "daily" as const,
+      changeFrequency: "weekly" as const,
       priority: 0.8,
+    })),
+    ...articles.map((a) => ({
+      url: `${base}${articleHref(a)}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
     })),
   ];
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -10,12 +11,12 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: "Rabatt Express – Gutscheine & Rabattcodes",
-    template: "%s | Rabatt Express",
+    default: `${siteConfig.name} – Kaufberatung & Preis-Leistung`,
+    template: `%s | ${siteConfig.name}`,
   },
-  description:
-    "Aktuelle Gutscheine und Rabattcodes. Schwerpunkt Essen & Trinken: Lieferdienste, Supermarkt, Vor Ort und Mittagstisch.",
+  description: siteConfig.tagline,
 };
 
 export default function RootLayout({
@@ -23,7 +24,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="de">
-      <body className={manrope.variable}>
+      <body className={`${manrope.variable} font-sans`}>
         <SiteHeader />
         <main>{children}</main>
         <SiteFooter />

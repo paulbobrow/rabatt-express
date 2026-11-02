@@ -1,104 +1,95 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CategoryIcon } from "@/components/CategoryIcon";
-import { PopularCouponCard } from "@/components/PopularCouponCard";
-import { ShopLogo } from "@/components/ShopLogo";
 import {
   categories,
-  getCategoryBySlug,
-  getShopsByCategory,
-  getShopsBySubcategory,
-} from "@/data/shops";
+  getArticlesByCategory,
+  getCategory,
+  products,
+} from "@/content/seed";
+import { articleHref } from "@/lib/article-path";
 
-type Props = {
-  params: Promise<{ slug: string }>;
-};
+type Props = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
-  return categories.map((category) => ({ slug: category.slug }));
+  return categories.map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const category = getCategoryBySlug(slug);
+  const category = getCategory(slug);
   if (!category) return { title: "Kategorie" };
-  return {
-    title: `${category.label} Gutscheine`,
-    description: category.teaser,
-  };
+  return { title: category.name, description: category.description };
 }
 
 export default async function CategoryPage({ params }: Props) {
   const { slug } = await params;
-  const category = getCategoryBySlug(slug);
+  const category = getCategory(slug);
   if (!category) notFound();
 
-  const categoryShops = getShopsByCategory(slug);
-  const coupons = categoryShops.flatMap((shop) =>
-    shop.coupons.map((coupon) => ({ shop, coupon })),
-  );
+  const list = getArticlesByCategory(slug);
+  const categoryProducts = products.filter((p) => p.categorySlug === slug);
 
   return (
-    <div className="container section">
-      <nav className="breadcrumbs" aria-label="Brotkrumen">
-        <Link href="/">Gutscheine</Link>
+    <div className="mx-auto max-w-5xl px-4 py-10">
+      <nav className="flex gap-2 text-sm text-muted">
+        <Link href="/" className="hover:text-brand">
+          Start
+        </Link>
         <span>/</span>
-        <strong>{category.label}</strong>
+        <span className="text-ink">{category.name}</span>
       </nav>
 
-      <header className="page-hero">
-        <h1>{category.label} Gutscheine</h1>
-        <p>{category.teaser}</p>
+      <header className="mt-6 max-w-3xl">
+        <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">
+          {category.name}
+        </h1>
+        <p className="mt-3 text-base text-muted">{category.description}</p>
       </header>
 
-      {category.subcategories?.length ? (
-        <div className="subcat-grid" style={{ marginBottom: "1.5rem" }}>
-          {category.subcategories.map((sub) => {
-            const count = getShopsBySubcategory(slug, sub.slug).length;
-            return (
+      {list.length ? (
+        <section className="mt-10">
+          <h2 className="text-xl font-extrabold">Ratgeber & Vergleiche</h2>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            {list.map((article) => (
               <Link
-                key={sub.slug}
-                href={`/kategorie/${slug}/${sub.slug}`}
-                className="subcat-card"
+                key={article.slug}
+                href={articleHref(article)}
+                className="rounded-2xl border border-line bg-surface p-5 hover:border-brand/40"
               >
-                <span className="subcat-icon">
-                  <CategoryIcon name={sub.icon} />
-                </span>
-                <span className="subcat-copy">
-                  <strong>{sub.label}</strong>
-                  <span>{sub.teaser}</span>
-                  <em>{count} Shops</em>
-                </span>
+                <h3 className="font-extrabold leading-snug">{article.title}</h3>
+                <p className="mt-2 text-sm text-muted">{article.excerpt}</p>
               </Link>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        </section>
+      ) : (
+        <p className="mt-10 rounded-2xl border border-dashed border-line bg-bg p-6 text-sm text-muted">
+          Inhalte für diese Kategorie folgen als Nächstes im Redaktionsplan.
+        </p>
+      )}
+
+      {categoryProducts.length ? (
+        <section className="mt-10">
+          <h2 className="text-xl font-extrabold">Produkte im Überblick</h2>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+            {categoryProducts.map((product) => (
+              <div
+                key={product.slug}
+                className="rounded-2xl border border-line bg-surface p-4"
+              >
+                <p className="font-extrabold">{product.name}</p>
+                <p className="mt-1 text-xs text-muted">{product.brand}</p>
+                <p className="mt-2 text-sm text-muted line-clamp-3">
+                  {product.summary}
+                </p>
+                <p className="mt-3 text-sm font-bold text-brand">
+                  Score {product.score.toFixed(1)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
       ) : null}
-
-      <div className="section-head">
-        <div>
-          <h2>Shops in {category.label}</h2>
-        </div>
-      </div>
-      <div className="brand-grid" style={{ marginBottom: "2rem" }}>
-        {categoryShops.map((shop) => (
-          <Link key={shop.slug} href={`/shop/${shop.slug}`} className="brand-tile">
-            <ShopLogo shop={shop} size={140} />
-            <span>{shop.name}</span>
-          </Link>
-        ))}
-      </div>
-
-      <div className="section-head">
-        <div>
-          <h2>Aktuelle Gutscheine</h2>
-        </div>
-      </div>
-      <div className="popular-grid">
-        {coupons.map(({ shop, coupon }) => (
-          <PopularCouponCard key={coupon.id} shop={shop} coupon={coupon} />
-        ))}
-      </div>
     </div>
   );
 }

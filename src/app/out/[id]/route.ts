@@ -1,28 +1,30 @@
 import { NextResponse } from "next/server";
-import { getCouponById } from "@/data/shops";
-import { buildAffiliateUrl } from "@/lib/affiliate";
+import { getOfferById, getProduct } from "@/content/seed";
+import { buildTrackedUrl } from "@/lib/affiliate";
 
-type Params = {
-  params: Promise<{ id: string }>;
-};
+type Ctx = { params: Promise<{ id: string }> };
 
-export async function GET(request: Request, { params }: Params) {
-  const { id } = await params;
-  const match = getCouponById(id);
+export async function GET(_request: Request, context: Ctx) {
+  const { id } = await context.params;
+  const offer = getOfferById(id);
 
-  if (!match) {
-    return NextResponse.redirect(new URL("/", request.url), 302);
+  if (!offer) {
+    return NextResponse.redirect(new URL("/", process.env.NEXT_PUBLIC_SITE_URL || "https://rabatt-express.de"), 302);
   }
 
-  const destination = buildAffiliateUrl({
-    merchantUrl: match.coupon.merchantUrl,
-    network: match.shop.affiliateNetwork,
-    awinMerchantId: match.shop.awinMerchantId,
+  const product = getProduct(offer.productSlug);
+  const target = buildTrackedUrl({
+    merchantUrl: offer.url,
+    network: offer.network,
+    awinMerchantId: offer.awinMerchantId,
   });
 
-  const response = NextResponse.redirect(destination, 302);
+  const response = NextResponse.redirect(target, 302);
   response.headers.set("Referrer-Policy", "no-referrer");
   response.headers.set("X-Robots-Tag", "noindex, nofollow");
-  response.headers.set("Cache-Control", "no-store");
+  response.headers.set(
+    "X-Affiliate-Product",
+    product?.slug ?? offer.productSlug,
+  );
   return response;
 }

@@ -1,41 +1,46 @@
-import Image from "next/image";
 import Link from "next/link";
+import { siteConfig } from "@/lib/site";
+import { categories } from "@/content/seed";
 
 export function SiteHeader() {
+  const nav = categories.slice(0, 4);
+
   return (
-    <header className="site-header">
-      <div className="container header-top">
-        <Link href="/" className="brand" aria-label="Rabatt Express Startseite">
-          <Image
-            className="brand-logo"
-            src="/logo.jpg"
-            alt="Rabatt Express"
-            width={36}
-            height={36}
-            priority
-          />
-          <strong>Rabatt Express</strong>
+    <header className="sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur">
+      <div className="mx-auto flex h-16 max-w-5xl items-center gap-6 px-4">
+        <Link href="/" className="flex shrink-0 flex-col leading-tight">
+          <span className="text-[15px] font-extrabold tracking-tight">
+            {siteConfig.name}
+          </span>
+          <span className="hidden text-[11px] text-muted sm:block">
+            Preis-Leistung zuerst
+          </span>
         </Link>
 
-        <nav className="header-nav" aria-label="Hauptnavigation">
-          <Link href="/">Gutscheine</Link>
-          <Link href="/#essen-trinken">Essen &amp; Trinken</Link>
-          <Link href="/#beliebte-gutscheine">Top Gutscheine</Link>
-          <Link href="/#kategorien">Kategorien</Link>
+        <nav className="hidden flex-1 items-center gap-1 md:flex" aria-label="Hauptnavigation">
+          {nav.map((c) => (
+            <Link
+              key={c.slug}
+              href={`/kategorie/${c.slug}`}
+              className="rounded-full px-3 py-1.5 text-sm font-semibold text-ink hover:bg-bg"
+            >
+              {c.name.split("&")[0].trim()}
+            </Link>
+          ))}
+          <Link
+            href="/methodik"
+            className="rounded-full px-3 py-1.5 text-sm font-semibold text-muted hover:bg-bg hover:text-ink"
+          >
+            Methodik
+          </Link>
         </nav>
 
-        <form className="header-search" action="/" method="get" role="search">
-          <label htmlFor="header-q" className="sr-only">
-            Shop suchen
-          </label>
-          <input id="header-q" name="q" placeholder="Shop suchen" />
-          <button type="submit" aria-label="Suchen">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-              <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-              <path d="M20 20l-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          </button>
-        </form>
+        <Link
+          href="/vergleich/beste-vpn-2026"
+          className="ml-auto rounded-full bg-brand px-3.5 py-2 text-sm font-bold text-white hover:bg-brand-dark"
+        >
+          Top-Vergleiche
+        </Link>
       </div>
     </header>
   );
