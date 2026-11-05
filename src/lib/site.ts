@@ -5,8 +5,8 @@ export const siteConfig = {
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "info@rabatt-express.de",
   tagline: "Preis-Leistung zuerst – Kaufberatung mit Deal-Radar",
   operatorName: process.env.NEXT_PUBLIC_OPERATOR_NAME || "Paul Bobrow",
-  street: process.env.NEXT_PUBLIC_OPERATOR_STREET || "Bergstraße 3/2",
-  zipCity: process.env.NEXT_PUBLIC_OPERATOR_ZIP_CITY || "69469 Weinheim",
+  street: process.env.NEXT_PUBLIC_OPERATOR_STREET || "Musterweg 12",
+  zipCity: process.env.NEXT_PUBLIC_OPERATOR_ZIP_CITY || "12345 Beispielstadt",
   phone: process.env.NEXT_PUBLIC_OPERATOR_PHONE || "",
   vatId: process.env.NEXT_PUBLIC_VAT_ID || "",
 };
